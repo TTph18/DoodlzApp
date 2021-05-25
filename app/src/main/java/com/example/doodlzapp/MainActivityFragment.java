@@ -131,7 +131,7 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.doodle_fragment_menu, menu);
     }
 
     // handle choice from options menu
