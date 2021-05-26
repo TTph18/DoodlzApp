@@ -7,6 +7,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -124,7 +125,8 @@ public class MainActivityFragment extends Fragment {
 
     // confirm whether image should be erase
     private void confirmErase() {
-
+        EraseImageDialogFragment fragment = new EraseImageDialogFragment();
+        fragment.show(getFragmentManager(), "erase dialog");
     }
 
     // displays the fragment's menu items
@@ -137,11 +139,27 @@ public class MainActivityFragment extends Fragment {
     // handle choice from options menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        FragmentManager fm = getFragmentManager();
         // switch based on the MenuItem id
         switch (item.getItemId()) {
-            /*case R.id.eraser:
-                doodleView.setColor("#FFFFFF");*/
-
+            case R.id.color:
+                ColorDialogFragment colorDialog = new ColorDialogFragment();
+                colorDialog.show(getFragmentManager(), "color dialog");
+            case R.id.line_width:
+                LineWidthDialogFragment widthDialog =
+                        new LineWidthDialogFragment();
+                widthDialog.show(getFragmentManager(), "line width dialog");
+            case R.id.delete_drawing:
+                confirmErase(); // confirm before erasing image
+            case R.id.save:
+                //saveImage(); // check permission and save current image
+                return true; // consume the menu event
+            case R.id.print:
+                //doodleView.printImage(); // print the current images
+                return true; // consume the menu event
+            case R.id.image:
+                //pickImage();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
