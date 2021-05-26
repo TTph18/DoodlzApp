@@ -195,6 +195,12 @@ public class MainActivityFragment extends Fragment {
             case R.id.default_brush:
                 doodleView.setDefaultBrush();
                 return true;
+            case R.id.redo:
+                doodleView.onClickRedo();
+                return true;
+            case R.id.undo:
+                doodleView.onClickUndo();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
