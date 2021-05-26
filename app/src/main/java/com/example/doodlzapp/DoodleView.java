@@ -2,6 +2,7 @@ package com.example.doodlzapp;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.CornerPathEffect;
@@ -104,6 +105,14 @@ public class DoodleView extends View
         drawPaint.setStrokeWidth(brushSize);
     }
 
+    public void setDefaultBrush(String brushType) {
+        drawPaint.setMaskFilter(new BlurMaskFilter(1, BlurMaskFilter.Blur.SOLID) );
+    }
+
+    public void setBlurBrush(String brushType){
+        drawPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.NORMAL));
+    }
+    
     public void setLastBrushSize(float lastSize)
     {
         lastBrushSize = lastSize;
