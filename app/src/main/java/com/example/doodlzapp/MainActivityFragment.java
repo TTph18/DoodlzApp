@@ -59,6 +59,7 @@ public class MainActivityFragment extends Fragment {
         colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this.getActivity(), ColorPickerDialog.LIGHT_THEME);
         colorPickerDialog.setLastColor(currentColor);
         colorPickerDialog.setOnColorPickedListener((color, hexVal) -> currentColor = color);
+        doodleView.setBlurBrush();
         return view;
     }
 
@@ -169,7 +170,6 @@ public class MainActivityFragment extends Fragment {
                     public void onColorPicked(int color, String hexVal) {
 
                         doodleView.setColor(color);
-
                         // Make use of the picked color here
                     }
                 });

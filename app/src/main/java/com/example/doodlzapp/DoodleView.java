@@ -29,6 +29,7 @@ public class DoodleView extends View
     private int paintColor = Color.BLACK;
     private Canvas drawCanvas;
     private boolean erase = false;
+    private boolean isBlurBrush = true;
     private int drawingBackgroundColor;
 
     private Integer currentBrushSize = 15;
@@ -85,13 +86,11 @@ public class DoodleView extends View
         drawPaint.setColor(paintColor);
         drawPaint.setAntiAlias(true);
         drawPaint.setStyle(Paint.Style.STROKE);
-        drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
         drawingBackgroundColor = Color.WHITE;
 
         drawPaint.setPathEffect(new CornerPathEffect(10) );
         canvasPaint = new Paint(Paint.DITHER_FLAG);
-        drawPaint.setMaskFilter(new BlurMaskFilter(28, BlurMaskFilter.Blur.NORMAL));
     }
 
     // return the painted line's width
@@ -106,11 +105,12 @@ public class DoodleView extends View
     }
 
     public void setDefaultBrush(String brushType) {
+        isBlurBrush = false;
         drawPaint.setMaskFilter(new BlurMaskFilter(1, BlurMaskFilter.Blur.SOLID) );
     }
 
     public void setBlurBrush(){
-        drawPaint.setMaskFilter(new BlurMaskFilter(28, BlurMaskFilter.Blur.NORMAL));
+        isBlurBrush = true;
     }
 
     public void setErase(boolean isErase) {
@@ -163,10 +163,13 @@ public class DoodleView extends View
         drawPaint.setStyle(Paint.Style.STROKE);
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
+        if (isBlurBrush) drawPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.NORMAL) );
+        else drawPaint.setMaskFilter(new BlurMaskFilter(1, BlurMaskFilter.Blur.SOLID) );
         invalidate();
 
     }
 
+    //Get brush color
     public int getPaintColor() {
         return paintColor;
     }
@@ -230,15 +233,12 @@ public class DoodleView extends View
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-
                 drawPath.lineTo(touchX, touchY);
-
                 this.addPath(true);
                 drawCanvas.drawPath(drawPath, drawPaint);
                 drawPath.reset();
                 undonePaths.clear();
                 undonePaints.clear();
-
                 invalidate();
                 break;
             default:
