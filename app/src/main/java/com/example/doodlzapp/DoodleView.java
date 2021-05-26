@@ -246,8 +246,7 @@ public class DoodleView extends View
         q.add(pt);
         while (q.size() > 0) {
             Point n = q.poll();
-            int pixel_color = bmp.getPixel(n.x, n.y);
-            if (pixel_color != targetColor)
+            if (bmp.getPixel(n.x, n.y) != targetColor)
                 continue;
 
             Point w = n, e = new Point(n.x + 1, n.y);
