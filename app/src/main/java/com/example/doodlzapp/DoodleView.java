@@ -53,10 +53,10 @@ public class DoodleView extends View
     private float scaleFactor = 1.f;
     private ScaleGestureDetector detector;
 
-    private boolean isEraser = false;
-    private boolean isBlurBrush = false;
-    private boolean isPaintBucket = false;
-    private boolean isDefaultBrush = true;
+    private boolean isEraser;
+    private boolean isBlurBrush;
+    private boolean isPaintBucket;
+    private boolean isDefaultBrush;
 
     public DoodleView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -102,6 +102,11 @@ public class DoodleView extends View
         drawPaint.setPathEffect(new CornerPathEffect(10) );
         canvasPaint = new Paint(Paint.DITHER_FLAG);
         drawingBackgroundColor = 0;
+
+        isEraser = false;
+        isBlurBrush = false;
+        isPaintBucket = false;
+        isDefaultBrush = true;
     }
 
 
@@ -142,10 +147,9 @@ public class DoodleView extends View
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
 
-        if (isBlurBrush) drawPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.NORMAL) );
-        if (isDefaultBrush) drawPaint.setMaskFilter(new BlurMaskFilter(1, BlurMaskFilter.Blur.SOLID) );
+        if (isDefaultBrush) drawPaint.setMaskFilter(new BlurMaskFilter(1, BlurMaskFilter.Blur.SOLID));
+        if (isBlurBrush) drawPaint.setMaskFilter(new BlurMaskFilter(20, BlurMaskFilter.Blur.NORMAL));
         invalidate();
-
     }
 
 
