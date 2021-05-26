@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
     <item
         android:id="@+id/color"
         android:title="@string/menuitem_color"
@@ -11,6 +13,13 @@
         android:id="@+id/line_width"
         android:title="@string/menuitem_line_width"
         android:icon="@drawable/ic_baseline_brush_24"
+        app:showAsAction="ifRoom">
+    </item>
+
+    <item
+        android:id="@+id/bucket"
+        android:title="@string/menuitem_bucket"
+        android:icon="@drawable/ic_baseline_palette_24"
         app:showAsAction="ifRoom">
     </item>
 

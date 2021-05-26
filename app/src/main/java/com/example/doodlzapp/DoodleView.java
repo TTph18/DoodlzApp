@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
@@ -17,6 +18,8 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class DoodleView extends View
 {
@@ -28,8 +31,7 @@ public class DoodleView extends View
     private Paint drawPaint, canvasPaint;
     private int paintColor = Color.BLACK;
     private Canvas drawCanvas;
-    private boolean erase = false;
-    private boolean isBlurBrush = true;
+
     private int drawingBackgroundColor;
 
     private Integer currentBrushSize = 15;
@@ -46,6 +48,10 @@ public class DoodleView extends View
 
     private float scaleFactor = 1.f;
     private ScaleGestureDetector detector;
+
+    private boolean erase = false;
+    private boolean isBlurBrush = false;
+    private boolean isPaintBucket = false;
 
     public DoodleView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -224,21 +230,43 @@ public class DoodleView extends View
 
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                this.addPath(true);
-                drawPath.moveTo(touchX, touchY);
+                if (isPaintBucket)
+                {
+                    Point _point = new  Point((int)touchX, (int)touchY);
+                    FloodFill(canvasBitmap, _point, 0, Color.RED);
+                }
+                else {
+                    this.addPath(true);
+                    drawPath.moveTo(touchX, touchY);
+                }
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
-                drawPath.lineTo(touchX, touchY);
+                if (isPaintBucket)
+                {
+                    Point _point = new  Point((int)touchX, (int)touchY);
+                    FloodFill(canvasBitmap, _point, 0, Color.RED);
+                }
+                else {
+                    drawPath.lineTo(touchX, touchY);
+                }
+
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                drawPath.lineTo(touchX, touchY);
-                this.addPath(true);
-                drawCanvas.drawPath(drawPath, drawPaint);
-                drawPath.reset();
-                undonePaths.clear();
-                undonePaints.clear();
+                if (isPaintBucket)
+                {
+                    Point _point = new  Point((int)touchX, (int)touchY);
+                    FloodFill(canvasBitmap, _point, 0, Color.RED);
+                }
+                else {
+                    drawPath.lineTo(touchX, touchY);
+                    this.addPath(true);
+                    drawCanvas.drawPath(drawPath, drawPaint);
+                    drawPath.reset();
+                    undonePaths.clear();
+                    undonePaints.clear();
+                }
                 invalidate();
                 break;
             default:
@@ -247,4 +275,44 @@ public class DoodleView extends View
         invalidate();
         return true;
     }
+
+    public void setPaintBucket() {
+        if (isPaintBucket) isPaintBucket = false; else isPaintBucket = true;
+    }
+
+    public boolean getPaintBucket() {
+        return isPaintBucket;
+    }
+
+    private void FloodFill(Bitmap bmp, Point pt, int targetColor, int replacementColor){
+        Queue<Point> q = new LinkedList<Point>();
+        q.add(pt);
+        while (q.size() > 0) {
+            Point n = q.poll();
+            int pixel_color = bmp.getPixel(n.x, n.y);
+            if (pixel_color != targetColor)
+                continue;
+
+            Point w = n, e = new Point(n.x + 1, n.y);
+            while ((w.x > 0) && (bmp.getPixel(w.x, w.y) == targetColor)) {
+                bmp.setPixel(w.x, w.y, replacementColor);
+                if ((w.y > 0) && (bmp.getPixel(w.x, w.y - 1) == targetColor))
+                    q.add(new Point(w.x, w.y - 1));
+                if ((w.y < bmp.getHeight() - 1)
+                        && (bmp.getPixel(w.x, w.y + 1) == targetColor))
+                    q.add(new Point(w.x, w.y + 1));
+                w.x--;
+            }
+            while ((e.x < bmp.getWidth() - 1)
+                    && (bmp.getPixel(e.x, e.y) == targetColor)) {
+                bmp.setPixel(e.x, e.y, replacementColor);
+
+                if ((e.y > 0) && (bmp.getPixel(e.x, e.y - 1) == targetColor))
+                    q.add(new Point(e.x, e.y - 1));
+                if ((e.y < bmp.getHeight() - 1)
+                        && (bmp.getPixel(e.x, e.y + 1) == targetColor))
+                    q.add(new Point(e.x, e.y + 1));
+                e.x++;
+            }
+        }}
 }

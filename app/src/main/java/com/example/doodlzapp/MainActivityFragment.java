@@ -186,6 +186,8 @@ public class MainActivityFragment extends Fragment {
                 return true; // consume the menu event
             case R.id.image:
                 //pickImage();
+            case R.id.bucket:
+                doodleView.setPaintBucket();
                 return true;
         }
 

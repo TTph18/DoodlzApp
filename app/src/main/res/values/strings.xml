@@ -21,6 +21,7 @@
     <string name="menuitem_color">Color</string>
     <string name="menuitem_delete">Erase Drawing</string>
     <string name="menuitem_line_width">Line Width</string>
+    <string name="menuitem_bucket">Paint bucket</string>
     <string name="menuitem_save">Save</string>
     <string name="menuitem_print">Print</string>
     <string name="message_erase">Erase the drawing?</string>
