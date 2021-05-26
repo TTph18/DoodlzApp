@@ -129,7 +129,8 @@ public class MainActivityFragment extends Fragment {
 
     // confirm whether image should be erase
     private void confirmErase() {
-
+        EraseImageDialogFragment fragment = new EraseImageDialogFragment();
+        fragment.show(getFragmentManager(), "erase dialog");
     }
 
     // displays the fragment's menu items
@@ -146,9 +147,10 @@ public class MainActivityFragment extends Fragment {
         switch (item.getItemId()) {
             /*case R.id.eraser:
                 doodleView.setColor("#FFFFFF");*/
-
+            case R.id.delete_drawing:
+                confirmErase(); // confirm before erasing image
+                return true; // consume the menu event
         }
-
         return super.onOptionsItemSelected(item);
     }
 

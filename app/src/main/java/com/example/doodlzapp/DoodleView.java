@@ -28,11 +28,10 @@ public class DoodleView extends View
     private Paint drawPaint, canvasPaint;
     private int paintColor = Color.BLACK;
     private Canvas drawCanvas;
-    private float lastBrushSize;
     private boolean erase = false;
     private int drawingBackgroundColor;
 
-    private Integer currentBrushSize = 5;
+    private Integer currentBrushSize = 15;
     private ArrayList<Path> mPaths;
     private ArrayList<Path> undonePaths = new ArrayList<>();
     private ArrayList<Paint> undonePaints = new ArrayList<>();
@@ -88,16 +87,14 @@ public class DoodleView extends View
         drawPath = new Path();
 
         drawPaint.setColor(paintColor);
-        drawPaint.setStrokeWidth(currentBrushSize);
         drawPaint.setAntiAlias(true);
         drawPaint.setStyle(Paint.Style.STROKE);
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
-
+        drawPaint.setStrokeCap(Paint.Cap.ROUND);
         drawingBackgroundColor = Color.WHITE;
 
         drawPaint.setPathEffect(new CornerPathEffect(10) );
         canvasPaint = new Paint(Paint.DITHER_FLAG);
-//        lastBrushSize = currentBrushSize;
     }
 
     // return the painted line's width
@@ -117,16 +114,6 @@ public class DoodleView extends View
 
     public void setBlurBrush(String brushType){
         drawPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.NORMAL));
-    }
-    
-    public void setLastBrushSize(float lastSize)
-    {
-        lastBrushSize = lastSize;
-    }
-
-    public float getLastBrushSize()
-    {
-        return lastBrushSize;
     }
 
     public void setErase(boolean isErase) {
