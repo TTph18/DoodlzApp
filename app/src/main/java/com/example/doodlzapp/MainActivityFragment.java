@@ -147,15 +147,14 @@ public class MainActivityFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         // switch based on the MenuItem id
         switch (item.getItemId()) {
-            case R.id.color:
-                ColorDialogFragment colorDialog = new ColorDialogFragment();
-                colorDialog.show(getFragmentManager(), "color dialog");
             case R.id.line_width:
                 LineWidthDialogFragment widthDialog =
                         new LineWidthDialogFragment();
                 widthDialog.show(getFragmentManager(), "line width dialog");
+                return true;
             case R.id.delete_drawing:
                 confirmErase(); // confirm before erasing image
+                return true;
             case R.id.save:
                 //saveImage(); // check permission and save current image
                 return true; // consume the menu event
