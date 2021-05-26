@@ -50,6 +50,13 @@
     </item>
 
     <item
+        android:id="@+id/bucket"
+        android:title="@string/menuitem_bucket"
+        android:icon="@drawable/ic_baseline_palette_24"
+        app:showAsAction="ifRoom">
+    </item>
+
+    <item
         android:id="@+id/delete_drawing"
         android:title="@string/menuitem_delete"
         android:icon="@drawable/ic_baseline_delete_24"
