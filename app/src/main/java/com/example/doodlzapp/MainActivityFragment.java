@@ -1,6 +1,10 @@
 package com.example.doodlzapp;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -177,7 +181,7 @@ public class MainActivityFragment extends Fragment {
                 confirmErase(); // confirm before erasing image
                 return true;
             case R.id.save:
-                //saveImage(); // check permission and save current image
+                saveImage(); // check permission and save current image
                 return true; // consume the menu event
             case R.id.print:
                 //doodleView.printImage(); // print the current images
@@ -201,6 +205,47 @@ public class MainActivityFragment extends Fragment {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // necessary or saves the image if the app already has permission
+    private void saveImage() {
+        // checks if the app does not have permission needed
+        // to save the image
+        int permissions = getContext().checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissions != PackageManager.PERMISSION_GRANTED) {
+            // shows an explanation for why permission is needed
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                AlertDialog.Builder builder =
+                        new AlertDialog.Builder(getActivity());
+
+                // set Alert Dialog's message
+                builder.setMessage(R.string.permission_explanation);
+
+                // add an OK button to the dialog
+                builder.setPositiveButton(android.R.string.ok,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // request permission
+                                requestPermissions(new String[]{
+                                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        SAVE_IMAGE_PERMISSION_REQUEST_CODE);
+                            }
+                        }
+                );
+
+                // display the dialog
+                builder.create().show();
+            } else {
+                // request permission
+                requestPermissions(
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        SAVE_IMAGE_PERMISSION_REQUEST_CODE);
+            }
+        } else { // if app already has permission to write to external storage
+            doodleView.saveImage(); // save the image
+        }
     }
 
     // returns the DoodleView

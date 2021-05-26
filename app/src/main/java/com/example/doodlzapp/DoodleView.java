@@ -279,9 +279,12 @@ public class DoodleView extends View
         // use "Doodlz" followed by current time as the image name
         final String name = "Doodlz" + System.currentTimeMillis() + ".jpg";
 
+        setDrawingCacheEnabled(true);
+        setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        Bitmap bitmap = getDrawingCache();
         // insert the image on the device
         String location = MediaStore.Images.Media.insertImage(
-                getContext().getContentResolver(), canvasBitmap, name,
+                getContext().getContentResolver(), bitmap, name,
                 "Doodlz Drawing");
 
         Toast message;
