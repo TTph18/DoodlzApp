@@ -1,6 +1,7 @@
 package com.example.doodlzapp;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -14,6 +15,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.azeesoft.lib.colorpicker.ColorPickerDialog;
 
 
 public class MainActivityFragment extends Fragment {
@@ -33,6 +36,8 @@ public class MainActivityFragment extends Fragment {
     private static final int READ_EXTERNAL_STORAGE_REQUEST_CODE = 2;
     private static final int PICK_IMAGE_REQUEST_CODE = 3;
 
+    int currentColor;
+    ColorPickerDialog colorPickerDialog;
     // called when Fragment's view needs to be created
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,6 +53,12 @@ public class MainActivityFragment extends Fragment {
         acceleration = 0.00f;
         currentAcceleration = SensorManager.GRAVITY_EARTH;
         lastAcceleration = SensorManager.GRAVITY_EARTH;
+
+        //create ColorPickerDialog
+        currentColor = Color.BLACK;
+        colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this.getActivity(), ColorPickerDialog.LIGHT_THEME);
+        colorPickerDialog.setLastColor(currentColor);
+        colorPickerDialog.setOnColorPickedListener((color, hexVal) -> currentColor = color);
         return view;
     }
 
@@ -151,6 +162,9 @@ public class MainActivityFragment extends Fragment {
                 LineWidthDialogFragment widthDialog =
                         new LineWidthDialogFragment();
                 widthDialog.show(getFragmentManager(), "line width dialog");
+                return true;
+            case R.id.color:
+                colorPickerDialog.show();
                 return true;
             case R.id.delete_drawing:
                 confirmErase(); // confirm before erasing image
