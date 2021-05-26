@@ -59,7 +59,6 @@ public class MainActivityFragment extends Fragment {
         colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this.getActivity(), ColorPickerDialog.LIGHT_THEME);
         colorPickerDialog.setLastColor(currentColor);
         colorPickerDialog.setOnColorPickedListener((color, hexVal) -> currentColor = color);
-        doodleView.setBlurBrush();
         return view;
     }
 
@@ -168,7 +167,6 @@ public class MainActivityFragment extends Fragment {
                 colorPickerDialog.setOnColorPickedListener(new ColorPickerDialog.OnColorPickedListener() {
                     @Override
                     public void onColorPicked(int color, String hexVal) {
-
                         doodleView.setColor(color);
                         // Make use of the picked color here
                     }
@@ -189,8 +187,19 @@ public class MainActivityFragment extends Fragment {
             case R.id.bucket:
                 doodleView.setPaintBucket();
                 return true;
+            case R.id.blur:
+                doodleView.setBlurBrush();
+                return true;
+            case R.id.default_brush:
+                doodleView.setDefaultBrush();
+                return true;
+            case R.id.redo:
+                doodleView.onClickRedo();
+                return true;
+            case R.id.undo:
+                doodleView.onClickUndo();
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

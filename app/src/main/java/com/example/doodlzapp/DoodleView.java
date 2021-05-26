@@ -53,9 +53,9 @@ public class DoodleView extends View
     private float scaleFactor = 1.f;
     private ScaleGestureDetector detector;
 
-    private boolean erase = false;
-    private boolean isBlurBrush = false;
-    private boolean isPaintBucket = false;
+    private boolean isBlurBrush;
+    private boolean isPaintBucket;
+    private boolean isDefaultBrush;
 
     public DoodleView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -101,41 +101,12 @@ public class DoodleView extends View
         drawPaint.setPathEffect(new CornerPathEffect(10) );
         canvasPaint = new Paint(Paint.DITHER_FLAG);
         drawingBackgroundColor = 0;
-    }
 
-    // return the painted line's width
-    public int getBrushWidth() {
-        return (int)drawPaint.getStrokeWidth();
-    }
-
-    public void setBrushWidth(int size) {
-        currentBrushSize = size;
-        drawPaint.setStrokeWidth(currentBrushSize);
-        invalidate();
-    }
-
-    public void setDefaultBrush(String brushType) {
         isBlurBrush = false;
-        drawPaint.setMaskFilter(new BlurMaskFilter(1, BlurMaskFilter.Blur.SOLID) );
+        isPaintBucket = false;
+        isDefaultBrush = true;
     }
 
-    public void setBlurBrush(){
-        isBlurBrush = true;
-    }
-
-    public void setErase(boolean isErase) {
-        this.setColor(Color.WHITE);
-        erase = isErase;
-
-        if (erase)
-        {
-            drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        }
-        else
-        {
-            drawPaint.setXfermode(null);
-        }
-    }
 
     // clear the painting
     public void eraseAll() {
@@ -173,23 +144,12 @@ public class DoodleView extends View
         drawPaint.setStyle(Paint.Style.STROKE);
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
-        if (isBlurBrush) drawPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.NORMAL) );
-        else drawPaint.setMaskFilter(new BlurMaskFilter(1, BlurMaskFilter.Blur.SOLID) );
-        invalidate();
 
-    }
-
-    //Get brush color
-    public int getPaintColor() {
-        return paintColor;
-    }
-
-    //Set brush color
-    public void setColor(int newColor) {
-        paintColor = newColor;
-        drawPaint.setColor(paintColor);
+        if (isDefaultBrush) drawPaint.setMaskFilter(new BlurMaskFilter(1, BlurMaskFilter.Blur.SOLID));
+        if (isBlurBrush) drawPaint.setMaskFilter(new BlurMaskFilter(20, BlurMaskFilter.Blur.NORMAL));
         invalidate();
     }
+
 
     public void onClickUndo() {
         if (mPaths.size() > 0) {
@@ -237,7 +197,7 @@ public class DoodleView extends View
                 if (isPaintBucket)
                 {
                     Point _point = new  Point((int)touchX, (int)touchY);
-                    FloodFill(canvasBitmap, _point, drawingBackgroundColor, paintColor);
+                    FloodFill(canvasBitmap, _point, 0, paintColor);
                 }
                 else {
                     this.addPath(true);
@@ -249,7 +209,7 @@ public class DoodleView extends View
                 if (isPaintBucket)
                 {
                     Point _point = new  Point((int)touchX, (int)touchY);
-                    FloodFill(canvasBitmap, _point, drawingBackgroundColor, Color.RED);
+                    FloodFill(canvasBitmap, _point, 0, Color.RED);
                 }
                 else {
                     drawPath.lineTo(touchX, touchY);
@@ -261,7 +221,7 @@ public class DoodleView extends View
                 if (isPaintBucket)
                 {
                     Point _point = new  Point((int)touchX, (int)touchY);
-                    FloodFill(canvasBitmap, _point, drawingBackgroundColor, paintColor);
+                    FloodFill(canvasBitmap, _point, 0, paintColor);
                 }
                 else {
                     drawPath.lineTo(touchX, touchY);
@@ -280,13 +240,6 @@ public class DoodleView extends View
         return true;
     }
 
-    public void setPaintBucket() {
-        if (isPaintBucket) isPaintBucket = false; else isPaintBucket = true;
-    }
-
-    public boolean getPaintBucket() {
-        return isPaintBucket;
-    }
 
     private void FloodFill(Bitmap bmp, Point pt, int targetColor, int replacementColor){
         Queue<Point> q = new LinkedList<Point>();
@@ -317,7 +270,6 @@ public class DoodleView extends View
                     q.add(new Point(e.x, e.y + 1));
                 e.x++;
             }
-            drawingBackgroundColor = targetColor;
         }
     }
 
@@ -348,4 +300,44 @@ public class DoodleView extends View
         message.show();
     }
 
+    //Get brush color
+    public int getPaintColor() {
+        return paintColor;
+    }
+
+    //Set brush color
+    public void setColor(int newColor) {
+        paintColor = newColor;
+        drawPaint.setColor(paintColor);
+        invalidate();
+    }
+
+    public void setPaintBucket() {
+        isBlurBrush = false;
+        isPaintBucket = true;
+        isDefaultBrush = true;
+    }
+
+    // return the painted line's width
+    public int getBrushWidth() {
+        return (int)drawPaint.getStrokeWidth();
+    }
+
+    public void setBrushWidth(int size) {
+        currentBrushSize = size;
+        drawPaint.setStrokeWidth(currentBrushSize);
+        invalidate();
+    }
+
+    public void setDefaultBrush() {
+        isBlurBrush = false;
+        isPaintBucket = false;
+        isDefaultBrush = true;
+    }
+
+    public void setBlurBrush(){
+        isBlurBrush = true;
+        isPaintBucket = false;
+        isDefaultBrush = false;
+    }
 }
