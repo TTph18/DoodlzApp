@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/undo"
+        android:title="@string/menuitem_undo"
+        android:icon="@drawable/ic_baseline_undo_24"
+        app:showAsAction="ifRoom">
+    </item>
+
+    <item
+        android:id="@+id/redo"
+        android:title="@string/menuitem_redo"
+        android:icon="@drawable/ic_baseline_redo_24"
+        app:showAsAction="ifRoom">
+    </item>
+
+    <item
         android:id="@+id/color"
         android:title="@string/menuitem_color"
         android:icon="@drawable/ic_baseline_palette_24"
@@ -11,6 +25,27 @@
         android:id="@+id/line_width"
         android:title="@string/menuitem_line_width"
         android:icon="@drawable/ic_baseline_brush_24"
+        app:showAsAction="ifRoom">
+    </item>
+
+    <item
+        android:id="@+id/fill"
+        android:title="@string/menuitem_fill"
+        android:icon="@drawable/ic_color_fill_svgrepo_com"
+        app:showAsAction="ifRoom">
+    </item>
+
+    <item
+        android:id="@+id/blur"
+        android:title="@string/menuitem_blur"
+        android:icon="@drawable/ic_water_drop_svgrepo_com"
+        app:showAsAction="ifRoom">
+    </item>
+
+    <item
+        android:id="@+id/earse"
+        android:title="@string/menuitem_earse"
+        android:icon="@drawable/ic_eraser_svgrepo_com"
         app:showAsAction="ifRoom">
     </item>
 

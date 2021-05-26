@@ -37,6 +37,7 @@ public class FirstFragment extends Fragment {
     // used to identify the request for using external storage, which
     // the save image feature needs
     private static final int SAVE_IMAGE_PERMISSION_REQUEST_CODE = 1;
+    private static final int READ_EXTERNAL_STORAGE_REQUEST_CODE = 2;
 
     @Override
     public View onCreateView(
@@ -119,8 +120,7 @@ public class FirstFragment extends Fragment {
 
     private void confirmErase() {
         EraseImageDialogFragment fragment = new EraseImageDialogFragment();
-
-        //fragment.show(getFragmentManager(), "erase dialog");
+        fragment.show(getFragmentManager(), "erase dialog");
     }
 
     // displays the fragment's menu items
@@ -137,10 +137,10 @@ public class FirstFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.line_width:
                 LineWidthDialogFragment widthDialog = new LineWidthDialogFragment();
-                //widthDialog.show(getFragmentManager(), "line width dialog");
+                widthDialog.show(getFragmentManager(), "line width dialog");
                 return true; // consume the menu event
             case R.id.delete_drawing:
-                confirmErase(); // confirm before erasing image
+                confirmErase();// confirm before erasing image
                 return true; // consume the menu event
             case R.id.save:
                 saveImage(); // check permission and save current image
@@ -153,13 +153,14 @@ public class FirstFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    // requests the permission needed for saving the image if
+    // requests for the permission needed for saving the image if
     // necessary or saves the image if the app already has permission
     private void saveImage() {
         // checks if the app does not have permission needed
         // to save the image
-        if (getContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // shows an explanation of why permission is needed
+        int permissions = getContext().checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissions != PackageManager.PERMISSION_GRANTED) {
+            // shows an explanation for why permission is needed
             if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -167,11 +168,16 @@ public class FirstFragment extends Fragment {
                 builder.setMessage(R.string.permission_explanation);
 
                 // add an OK button to the dialog
-                //builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                    // request permission
-                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_IMAGE_PERMISSION_REQUEST_CODE);
-                });
+                builder.setPositiveButton(android.R.string.ok,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // request permission
+                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_IMAGE_PERMISSION_REQUEST_CODE);
+                        }
+                    }
+                );
+
                 // display the dialog
                 builder.create().show();
             } else {
@@ -179,7 +185,7 @@ public class FirstFragment extends Fragment {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_IMAGE_PERMISSION_REQUEST_CODE);
             }
         } else { // if app already has permission to write to external storage
-            //doodleView.saveImage(); // save the image
+            doodleView.saveImage(); // save the image
         }
     }
 
@@ -192,8 +198,12 @@ public class FirstFragment extends Fragment {
         switch (requestCode) {
             case SAVE_IMAGE_PERMISSION_REQUEST_CODE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    //doodleView.saveImage(); // save the image
-                    break;
+                    doodleView.saveImage(); // save the image
+                return;
+            //case READ_EXTERNAL_STORAGE_REQUEST_CODE:
+            //    if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            //        pickImage();
+            //    return;
         }
     }
 

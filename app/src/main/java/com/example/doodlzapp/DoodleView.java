@@ -1,5 +1,6 @@
 package com.example.doodlzapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
@@ -10,11 +11,13 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.provider.MediaStore;
 import android.util.AttributeSet;
-import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -251,5 +254,32 @@ public class DoodleView extends View
         }
         invalidate();
         return true;
+    }
+
+    // save the current image to the Gallery
+    public void saveImage() {
+        // use "Doodlz" followed by current time as the image name
+        final String name = "Doodlz" + System.currentTimeMillis() + ".jpg";
+
+        // insert the image on the device
+        String location = MediaStore.Images.Media.insertImage(
+                getContext().getContentResolver(), canvasBitmap, name,
+                "Doodlz Drawing");
+
+        Toast message;
+        if (location != null) {
+            // display a message indicating that the image was saved
+            message = Toast.makeText(getContext(),
+                    R.string.message_saved,
+                    Toast.LENGTH_SHORT);
+        }
+        else {
+            // display a message indicating that there was an error saving
+            message = Toast.makeText(getContext(),
+                    R.string.message_error_saving, Toast.LENGTH_SHORT);
+        }
+        message.setGravity(Gravity.CENTER, message.getXOffset() / 2,
+                message.getYOffset() / 2);
+        message.show();
     }
 }
