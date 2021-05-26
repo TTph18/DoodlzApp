@@ -167,7 +167,6 @@ public class MainActivityFragment extends Fragment {
                 colorPickerDialog.setOnColorPickedListener(new ColorPickerDialog.OnColorPickedListener() {
                     @Override
                     public void onColorPicked(int color, String hexVal) {
-
                         doodleView.setColor(color);
                         // Make use of the picked color here
                     }
@@ -201,7 +200,6 @@ public class MainActivityFragment extends Fragment {
                 doodleView.onClickUndo();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

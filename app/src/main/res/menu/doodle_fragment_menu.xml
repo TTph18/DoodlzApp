@@ -49,13 +49,6 @@
     </item>
 
     <item
-        android:id="@+id/earse"
-        android:title="@string/menuitem_earse"
-        android:icon="@drawable/ic_eraser_svgrepo_com"
-        app:showAsAction="ifRoom">
-    </item>
-
-    <item
         android:id="@+id/bucket"
         android:title="@string/menuitem_bucket"
         android:icon="@drawable/ic_baseline_palette_24"

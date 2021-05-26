@@ -53,7 +53,6 @@ public class DoodleView extends View
     private float scaleFactor = 1.f;
     private ScaleGestureDetector detector;
 
-    private boolean isEraser;
     private boolean isBlurBrush;
     private boolean isPaintBucket;
     private boolean isDefaultBrush;
@@ -103,7 +102,6 @@ public class DoodleView extends View
         canvasPaint = new Paint(Paint.DITHER_FLAG);
         drawingBackgroundColor = 0;
 
-        isEraser = false;
         isBlurBrush = false;
         isPaintBucket = false;
         isDefaultBrush = true;
@@ -319,7 +317,6 @@ public class DoodleView extends View
         isBlurBrush = false;
         isPaintBucket = true;
         isDefaultBrush = true;
-        isEraser = false;
     }
 
     // return the painted line's width
@@ -337,30 +334,11 @@ public class DoodleView extends View
         isBlurBrush = false;
         isPaintBucket = false;
         isDefaultBrush = true;
-        isEraser = false;
     }
 
     public void setBlurBrush(){
         isBlurBrush = true;
         isPaintBucket = false;
         isDefaultBrush = false;
-        isEraser = false;
     }
-
-    public void setErase() {
-        this.setColor(Color.WHITE);
-        isEraser = true;
-        isBlurBrush = true;
-        isPaintBucket = false;
-        isDefaultBrush = false;
-        if (isEraser)
-        {
-            drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        }
-        else
-        {
-            drawPaint.setXfermode(null);
-        }
-    }
-
 }
