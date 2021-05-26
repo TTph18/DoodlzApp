@@ -98,11 +98,15 @@ public class DoodleView extends View
 //        lastBrushSize = currentBrushSize;
     }
 
-    public void setBrushSize(float newSize) {
-        float pixelAmount = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, newSize, getResources().getDisplayMetrics());
+    // return the painted line's width
+    public int getBrushWidth() {
+        return (int)drawPaint.getStrokeWidth();
+    }
 
-        brushSize = pixelAmount;
-        drawPaint.setStrokeWidth(brushSize);
+    public void setBrushWidth(int size) {
+        currentBrushSize = size;
+        drawPaint.setStrokeWidth(currentBrushSize);
+        invalidate();
     }
 
     public void setDefaultBrush(String brushType) {
@@ -240,11 +244,6 @@ public class DoodleView extends View
         }
         invalidate();
         return true;
-    }
-
-    public void changeBrushSize(int size) {
-        currentBrushSize = size;
-        invalidate();
     }
 
     public int getPaintColor() {
