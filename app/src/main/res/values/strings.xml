@@ -30,6 +30,7 @@
     <string name="menuitem_fill">Fill</string>
     <string name="menuitem_square">Square</string>
     <string name="menuitem_circle">Circle</string>
+    <string name="menuitem_default_brush">Default brush</string>
     <string name="menuitem_blur">Brush blur</string>
     <string name="message_erase">Erase the drawing?</string>
     <string name="message_error_saving">There was an error saving the image</string>

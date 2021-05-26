@@ -36,6 +36,12 @@
     </item>
 
     <item
+        android:id="@+id/default_brush"
+        android:title="@string/menuitem_default_brush"
+        app:showAsAction="ifRoom">
+    </item>
+
+    <item
         android:id="@+id/blur"
         android:title="@string/menuitem_blur"
         android:icon="@drawable/ic_water_drop_svgrepo_com"

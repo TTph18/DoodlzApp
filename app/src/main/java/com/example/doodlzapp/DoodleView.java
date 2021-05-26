@@ -100,7 +100,7 @@ public class DoodleView extends View
 
         drawPaint.setPathEffect(new CornerPathEffect(10) );
         canvasPaint = new Paint(Paint.DITHER_FLAG);
-        drawingBackgroundColor = canvasPaint.getColor();
+        drawingBackgroundColor = 0;
     }
 
     // return the painted line's width
@@ -318,6 +318,7 @@ public class DoodleView extends View
                     q.add(new Point(e.x, e.y + 1));
                 e.x++;
             }
+            drawingBackgroundColor = targetColor;
         }
     }
 
