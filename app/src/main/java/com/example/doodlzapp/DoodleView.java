@@ -26,10 +26,11 @@ public class DoodleView extends View
     //private vars
     private Path drawPath;
     private Paint drawPaint, canvasPaint;
-    private int paintColor = 0xFF660000;
+    private int paintColor = Color.BLACK;
     private Canvas drawCanvas;
-    private float brushSize, lastBrushSize;
+    private float lastBrushSize;
     private boolean erase = false;
+    private int drawingBackgroundColor;
 
     private Integer currentBrushSize = 5;
     private ArrayList<Path> mPaths;
@@ -45,7 +46,6 @@ public class DoodleView extends View
 
     private float scaleFactor = 1.f;
     private ScaleGestureDetector detector;
-
 
     public DoodleView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -92,6 +92,8 @@ public class DoodleView extends View
         drawPaint.setAntiAlias(true);
         drawPaint.setStyle(Paint.Style.STROKE);
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
+
+        drawingBackgroundColor = Color.WHITE;
 
         drawPaint.setPathEffect(new CornerPathEffect(10) );
         canvasPaint = new Paint(Paint.DITHER_FLAG);
@@ -141,6 +143,13 @@ public class DoodleView extends View
         }
     }
 
+    // clear the painting
+    public void eraseAll() {
+        mPaths.clear(); // remove all paths
+        canvasBitmap.eraseColor(drawingBackgroundColor); // clear the bitmap
+        invalidate(); // refresh the screen
+    }
+
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
@@ -174,6 +183,17 @@ public class DoodleView extends View
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
         invalidate();
 
+    }
+
+    public int getPaintColor() {
+        return paintColor;
+    }
+
+    //Set brush color
+    public void setColor(String newColor) {
+        paintColor = Color.parseColor(newColor);
+        drawPaint.setColor(paintColor);
+        invalidate();
     }
 
     public void onClickUndo() {
@@ -244,15 +264,5 @@ public class DoodleView extends View
         }
         invalidate();
         return true;
-    }
-
-    public int getPaintColor() {
-        return paintColor;
-    }
-
-    public void setColor(String newColor) {
-        paintColor = Color.parseColor(newColor);
-        drawPaint.setColor(paintColor);
-        invalidate();
     }
 }
