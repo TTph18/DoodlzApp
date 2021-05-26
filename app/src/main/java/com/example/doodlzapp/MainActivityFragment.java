@@ -189,6 +189,12 @@ public class MainActivityFragment extends Fragment {
             case R.id.bucket:
                 doodleView.setPaintBucket();
                 return true;
+            case R.id.blur:
+                doodleView.setBlurBrush();
+                return true;
+            case R.id.default_brush:
+                doodleView.setDefaultBrush();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
