@@ -164,6 +164,15 @@ public class MainActivityFragment extends Fragment {
                 widthDialog.show(getFragmentManager(), "line width dialog");
                 return true;
             case R.id.color:
+                colorPickerDialog.setOnColorPickedListener(new ColorPickerDialog.OnColorPickedListener() {
+                    @Override
+                    public void onColorPicked(int color, String hexVal) {
+
+                        doodleView.setColor(color);
+
+                        // Make use of the picked color here
+                    }
+                });
                 colorPickerDialog.show();
                 return true;
             case R.id.delete_drawing:

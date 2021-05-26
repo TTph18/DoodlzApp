@@ -49,6 +49,8 @@ public class DoodleView extends View
     public DoodleView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setupDraw();
+        setLayerType(View.LAYER_TYPE_SOFTWARE, drawPaint);
+
         detector = new ScaleGestureDetector(getContext(), new ScaleListener());
     }
 
@@ -60,12 +62,6 @@ public class DoodleView extends View
             invalidate();
             return true;
         }
-    }
-
-    public void startNew() {
-        drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
-        setupDraw();
-        invalidate();
     }
 
     @Override
@@ -95,6 +91,7 @@ public class DoodleView extends View
 
         drawPaint.setPathEffect(new CornerPathEffect(10) );
         canvasPaint = new Paint(Paint.DITHER_FLAG);
+        drawPaint.setMaskFilter(new BlurMaskFilter(28, BlurMaskFilter.Blur.NORMAL));
     }
 
     // return the painted line's width
@@ -112,12 +109,12 @@ public class DoodleView extends View
         drawPaint.setMaskFilter(new BlurMaskFilter(1, BlurMaskFilter.Blur.SOLID) );
     }
 
-    public void setBlurBrush(String brushType){
-        drawPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.NORMAL));
+    public void setBlurBrush(){
+        drawPaint.setMaskFilter(new BlurMaskFilter(28, BlurMaskFilter.Blur.NORMAL));
     }
 
     public void setErase(boolean isErase) {
-        this.setColor("#FFFFFF");
+        this.setColor(Color.WHITE);
         erase = isErase;
 
         if (erase)
@@ -144,13 +141,11 @@ public class DoodleView extends View
         canvas.scale(scaleFactor, scaleFactor);
 
         canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
-//        canvas.drawPath(drawPath, drawPaint);
 
         for (int i = 0; i < mPaths.size(); ++i) {
             canvas.drawPath(mPaths.get(i), mPaints.get(i));
             invalidate();
         }
-
         canvas.restore();
     }
 
@@ -177,8 +172,8 @@ public class DoodleView extends View
     }
 
     //Set brush color
-    public void setColor(String newColor) {
-        paintColor = Color.parseColor(newColor);
+    public void setColor(int newColor) {
+        paintColor = newColor;
         drawPaint.setColor(paintColor);
         invalidate();
     }
@@ -243,7 +238,7 @@ public class DoodleView extends View
                 drawPath.reset();
                 undonePaths.clear();
                 undonePaints.clear();
-                //MainActivity.redoBtn.setEnabled(false);
+
                 invalidate();
                 break;
             default:
