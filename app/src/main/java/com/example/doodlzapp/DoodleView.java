@@ -2,6 +2,7 @@ package com.example.doodlzapp;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.CornerPathEffect;
@@ -25,12 +26,12 @@ public class DoodleView extends View
     //private vars
     private Path drawPath;
     private Paint drawPaint, canvasPaint;
-    private int paintColor = 0xFF660000;
+    private int paintColor = Color.BLACK;
     private Canvas drawCanvas;
-    private float brushSize, lastBrushSize;
     private boolean erase = false;
+    private int drawingBackgroundColor;
 
-    private Integer currentBrushSize = 5;
+    private Integer currentBrushSize = 15;
     private ArrayList<Path> mPaths;
     private ArrayList<Path> undonePaths = new ArrayList<>();
     private ArrayList<Paint> undonePaints = new ArrayList<>();
@@ -44,7 +45,6 @@ public class DoodleView extends View
 
     private float scaleFactor = 1.f;
     private ScaleGestureDetector detector;
-
 
     public DoodleView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -87,31 +87,33 @@ public class DoodleView extends View
         drawPath = new Path();
 
         drawPaint.setColor(paintColor);
-        drawPaint.setStrokeWidth(currentBrushSize);
         drawPaint.setAntiAlias(true);
         drawPaint.setStyle(Paint.Style.STROKE);
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
+        drawPaint.setStrokeCap(Paint.Cap.ROUND);
+        drawingBackgroundColor = Color.WHITE;
 
         drawPaint.setPathEffect(new CornerPathEffect(10) );
         canvasPaint = new Paint(Paint.DITHER_FLAG);
-//        lastBrushSize = currentBrushSize;
     }
 
-    public void setBrushSize(float newSize) {
-        float pixelAmount = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, newSize, getResources().getDisplayMetrics());
-
-        brushSize = pixelAmount;
-        drawPaint.setStrokeWidth(brushSize);
+    // return the painted line's width
+    public int getBrushWidth() {
+        return (int)drawPaint.getStrokeWidth();
     }
 
-    public void setLastBrushSize(float lastSize)
-    {
-        lastBrushSize = lastSize;
+    public void setBrushWidth(int size) {
+        currentBrushSize = size;
+        drawPaint.setStrokeWidth(currentBrushSize);
+        invalidate();
     }
 
-    public float getLastBrushSize()
-    {
-        return lastBrushSize;
+    public void setDefaultBrush(String brushType) {
+        drawPaint.setMaskFilter(new BlurMaskFilter(1, BlurMaskFilter.Blur.SOLID) );
+    }
+
+    public void setBlurBrush(String brushType){
+        drawPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.NORMAL));
     }
 
     public void setErase(boolean isErase) {
@@ -126,6 +128,13 @@ public class DoodleView extends View
         {
             drawPaint.setXfermode(null);
         }
+    }
+
+    // clear the painting
+    public void eraseAll() {
+        mPaths.clear(); // remove all paths
+        canvasBitmap.eraseColor(drawingBackgroundColor); // clear the bitmap
+        invalidate(); // refresh the screen
     }
 
     protected void onDraw(Canvas canvas) {
@@ -161,6 +170,17 @@ public class DoodleView extends View
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
         invalidate();
 
+    }
+
+    public int getPaintColor() {
+        return paintColor;
+    }
+
+    //Set brush color
+    public void setColor(String newColor) {
+        paintColor = Color.parseColor(newColor);
+        drawPaint.setColor(paintColor);
+        invalidate();
     }
 
     public void onClickUndo() {
@@ -231,20 +251,5 @@ public class DoodleView extends View
         }
         invalidate();
         return true;
-    }
-
-    public void changeBrushSize(int size) {
-        currentBrushSize = size;
-        invalidate();
-    }
-
-    public int getPaintColor() {
-        return paintColor;
-    }
-
-    public void setColor(String newColor) {
-        paintColor = Color.parseColor(newColor);
-        drawPaint.setColor(paintColor);
-        invalidate();
     }
 }

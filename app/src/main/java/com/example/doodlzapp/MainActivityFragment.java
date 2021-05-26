@@ -51,6 +51,11 @@ public class MainActivityFragment extends Fragment {
         return view;
     }
 
+    // indicates whether a dialog is displayed
+    public void setDialogOnScreen(boolean visible) {
+        dialogOnScreen = visible;
+    }
+
     // start listening for sensor events
     @Override
     public void onResume() {
