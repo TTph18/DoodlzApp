@@ -12,6 +12,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -96,10 +97,10 @@ public class DoodleView extends View
         drawPaint.setAntiAlias(true);
         drawPaint.setStyle(Paint.Style.STROKE);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
-        drawingBackgroundColor = Color.WHITE;
 
         drawPaint.setPathEffect(new CornerPathEffect(10) );
         canvasPaint = new Paint(Paint.DITHER_FLAG);
+        drawingBackgroundColor = canvasPaint.getColor();
     }
 
     // return the painted line's width
@@ -236,7 +237,7 @@ public class DoodleView extends View
                 if (isPaintBucket)
                 {
                     Point _point = new  Point((int)touchX, (int)touchY);
-                    FloodFill(canvasBitmap, _point, 0, Color.RED);
+                    FloodFill(canvasBitmap, _point, drawingBackgroundColor, paintColor);
                 }
                 else {
                     this.addPath(true);
@@ -248,7 +249,7 @@ public class DoodleView extends View
                 if (isPaintBucket)
                 {
                     Point _point = new  Point((int)touchX, (int)touchY);
-                    FloodFill(canvasBitmap, _point, 0, Color.RED);
+                    FloodFill(canvasBitmap, _point, drawingBackgroundColor, Color.RED);
                 }
                 else {
                     drawPath.lineTo(touchX, touchY);
@@ -260,7 +261,7 @@ public class DoodleView extends View
                 if (isPaintBucket)
                 {
                     Point _point = new  Point((int)touchX, (int)touchY);
-                    FloodFill(canvasBitmap, _point, 0, Color.RED);
+                    FloodFill(canvasBitmap, _point, drawingBackgroundColor, paintColor);
                 }
                 else {
                     drawPath.lineTo(touchX, touchY);
@@ -317,7 +318,8 @@ public class DoodleView extends View
                     q.add(new Point(e.x, e.y + 1));
                 e.x++;
             }
-        }}
+        }
+    }
 
     // save the current image to the Gallery
     public void saveImage() {
@@ -345,4 +347,5 @@ public class DoodleView extends View
                 message.getYOffset() / 2);
         message.show();
     }
+
 }
