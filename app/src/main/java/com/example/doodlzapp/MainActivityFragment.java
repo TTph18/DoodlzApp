@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.azeesoft.lib.colorpicker.ColorPickerDialog;
 
@@ -63,6 +64,24 @@ public class MainActivityFragment extends Fragment {
         colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this.getActivity(), ColorPickerDialog.LIGHT_THEME);
         colorPickerDialog.setLastColor(currentColor);
         colorPickerDialog.setOnColorPickedListener((color, hexVal) -> currentColor = color);
+
+        ImageButton brushButton = (ImageButton) view.findViewById(R.id.default_brush);
+        brushButton.setOnClickListener(v -> DefaultBrushClick());
+
+        ImageButton blurButton = (ImageButton) view.findViewById(R.id.blur);
+        blurButton.setOnClickListener(v -> BlurClick());
+
+        ImageButton bucketButton = (ImageButton) view.findViewById(R.id.bucket);
+        bucketButton.setOnClickListener(v -> BucketClick());
+
+        ImageButton deleteButton = (ImageButton) view.findViewById(R.id.delete_drawing);
+        deleteButton.setOnClickListener(v -> DeleteClick());
+
+        ImageButton lineWidthButton = (ImageButton) view.findViewById(R.id.line_width);
+        lineWidthButton.setOnClickListener(v -> LineWidth());
+
+        ImageButton colorButton = (ImageButton) view.findViewById(R.id.color);
+        colorButton.setOnClickListener(v -> ColorClick());
         return view;
     }
 
@@ -162,41 +181,9 @@ public class MainActivityFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         // switch based on the MenuItem id
         switch (item.getItemId()) {
-            case R.id.line_width:
-                LineWidthDialogFragment widthDialog =
-                        new LineWidthDialogFragment();
-                widthDialog.show(getFragmentManager(), "line width dialog");
-                return true;
-            case R.id.color:
-                colorPickerDialog.setOnColorPickedListener(new ColorPickerDialog.OnColorPickedListener() {
-                    @Override
-                    public void onColorPicked(int color, String hexVal) {
-                        doodleView.setColor(color);
-                        // Make use of the picked color here
-                    }
-                });
-                colorPickerDialog.show();
-                return true;
-            case R.id.delete_drawing:
-                confirmErase(); // confirm before erasing image
-                return true;
             case R.id.save:
                 saveImage(); // check permission and save current image
                 return true; // consume the menu event
-            case R.id.print:
-                //doodleView.printImage(); // print the current images
-                return true; // consume the menu event
-            case R.id.image:
-                //pickImage();
-            case R.id.bucket:
-                doodleView.setPaintBucket();
-                return true;
-            case R.id.blur:
-                doodleView.setBlurBrush();
-                return true;
-            case R.id.default_brush:
-                doodleView.setDefaultBrush();
-                return true;
             case R.id.redo:
                 doodleView.onClickRedo();
                 return true;
@@ -251,5 +238,40 @@ public class MainActivityFragment extends Fragment {
     // returns the DoodleView
     public DoodleView getDoodleView() {
         return doodleView;
+    }
+
+    public void DefaultBrushClick()
+    {
+        doodleView.setDefaultBrush();
+    }
+
+    public void BlurClick()
+    {
+        doodleView.setBlurBrush();
+    }
+
+    public void BucketClick()
+    {
+        doodleView.setPaintBucket();
+    }
+
+    public void DeleteClick() {
+        confirmErase(); // confirm before erasing image
+    }
+
+    public void LineWidth() {
+        LineWidthDialogFragment widthDialog = new LineWidthDialogFragment();
+        widthDialog.show(getFragmentManager(), "line width dialog");
+    }
+
+    public void ColorClick() {
+        colorPickerDialog.setOnColorPickedListener(new ColorPickerDialog.OnColorPickedListener() {
+            @Override
+            public void onColorPicked(int color, String hexVal) {
+                doodleView.setColor(color);
+                // Make use of the picked color here
+            }
+        });
+        colorPickerDialog.show();
     }
 }

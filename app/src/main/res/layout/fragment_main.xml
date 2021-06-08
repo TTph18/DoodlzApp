@@ -1,10 +1,125 @@
-<com.example.doodlzapp.DoodleView
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/doodleView"
-    android:background="@color/white"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivityFragment"
-    tools:showIn="@layout/activity_main">
-</com.example.doodlzapp.DoodleView>
+    android:layout_width="match_parent">
+    <com.example.doodlzapp.DoodleView
+        android:id="@+id/doodleView"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivityFragment"
+        tools:showIn="@layout/activity_main">
+    </com.example.doodlzapp.DoodleView>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        app:layout_constraintBottom_toBottomOf="@+id/doodleView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/color"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:background="#353639"
+                android:contentDescription="@string/menuitem_color"
+                android:foreground="?selectableItemBackground"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_baseline_palette_24"
+                android:tint="@color/white" />
+
+            <ImageButton
+                android:id="@+id/line_width"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:background="#353639"
+                android:contentDescription="@string/menuitem_line_width"
+                android:foreground="?selectableItemBackground"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_baseline_line_weight_24"
+                android:tint="@color/white" />
+
+            <ImageButton
+                android:id="@+id/default_brush"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:background="#353639"
+                android:contentDescription="@string/menuitem_default_brush"
+                android:foreground="?selectableItemBackground"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_baseline_brush_24"
+                android:tint="@color/white" />
+
+            <ImageButton
+                android:id="@+id/blur"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:background="#353639"
+                android:contentDescription="@string/menuitem_blur"
+                android:foreground="?selectableItemBackground"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_water_drop_svgrepo_com"
+                android:tint="@color/white" />
+
+            <ImageButton
+                android:id="@+id/erase"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:background="#353639"
+                android:contentDescription="@string/menuitem_earse"
+                android:foreground="?selectableItemBackground"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_eraser_svgrepo_com"
+                android:tint="@color/white" />
+
+            <ImageButton
+                android:id="@+id/bucket"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:background="#353639"
+                android:contentDescription="@string/menuitem_bucket"
+                android:foreground="?selectableItemBackground"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_color_fill_svgrepo_com"
+                android:tint="@color/white" />
+
+            <ImageButton
+                android:id="@+id/circle"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:background="#353639"
+                android:contentDescription="@string/menuitem_circle"
+                android:foreground="?selectableItemBackground"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_baseline_radio_button_unchecked_24"
+                android:tint="@color/white" />
+
+            <ImageButton
+                android:id="@+id/delete_drawing"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:background="#353639"
+                android:contentDescription="@string/menuitem_delete"
+                android:foreground="?selectableItemBackground"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_baseline_delete_24"
+                android:tint="@color/white" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</android.support.constraint.ConstraintLayout>
