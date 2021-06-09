@@ -203,9 +203,13 @@ public class MainActivityFragment extends Fragment {
                 return true; // consume the menu event
             case R.id.redo:
                 doodleView.onClickRedo();
+                //doodleView.findViewById(R.id.undo).setEnabled(true);
+                //item.setEnabled(false);
                 return true;
             case R.id.undo:
                 doodleView.onClickUndo();
+                //doodleView.findViewById(R.id.redo).setEnabled(true);
+                //item.setEnabled(false);
                 return true;
         }
         return super.onOptionsItemSelected(item);
