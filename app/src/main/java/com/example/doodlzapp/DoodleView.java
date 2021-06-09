@@ -174,12 +174,20 @@ public class DoodleView extends View
         invalidate();
     }
 
+    public boolean enableUndo() {
+        return mPaths.size() > 0;
+    }
+
+    public boolean enableRedo() {
+        return undonePaths.size() > 0;
+    }
+
     public void onClickUndo() {
-        if (mPaths.size() > 0) {
-            undonePaths.add(mPaths.remove(mPaths.size() - 2));
-            undonePaints.add(mPaints.remove(mPaints.size() - 2));
+        if (enableUndo()) {
+            undonePaths.add(mPaths.remove(mPaths.size() - 1));
+            undonePaints.add(mPaints.remove(mPaints.size() - 1));
             invalidate();
-            if (mPaths.size() > 0) {
+            if (enableUndo()) {
                 undonePaths.add(mPaths.remove(mPaths.size() - 1));
                 undonePaints.add(mPaints.remove(mPaints.size() - 1));
                 invalidate();
@@ -189,13 +197,13 @@ public class DoodleView extends View
     }
 
     public void onClickRedo() {
-        if (undonePaths.size() > 0) {
-            mPaths.add(undonePaths.remove(undonePaths.size() - 2));
-            mPaints.add(undonePaints.remove(undonePaints.size() - 2));
+        if (enableRedo()) {
+            mPaths.add(undonePaths.remove(undonePaths.size() - 1));
+            mPaints.add(undonePaints.remove(undonePaints.size() - 1));
             invalidate();
             if (undonePaths.size() > 0) {
-                mPaths.add(undonePaths.remove(undonePaths.size() - 2));
-                mPaints.add(undonePaints.remove(undonePaints.size() - 2));
+                mPaths.add(undonePaths.remove(undonePaths.size() - 1));
+                mPaints.add(undonePaints.remove(undonePaints.size() - 1));
                 invalidate();
             }
         }
