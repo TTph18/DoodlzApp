@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -31,7 +33,13 @@ public class MainActivityFragment extends Fragment {
     private float currentAcceleration;
     private float lastAcceleration;
     private boolean dialogOnScreen = false;
-
+    ImageButton brushButton;
+    ImageButton blurButton;
+    ImageButton bucketButton;
+    ImageButton circleButton;
+    ImageButton rectangleButton;
+    ImageButton eraseButton;
+    ImageButton currentbtn;
     // value used to determine whether user shook the device to erase
     private static final int ACCELERATION_THRESHOLD = 100000;
 
@@ -65,14 +73,23 @@ public class MainActivityFragment extends Fragment {
         colorPickerDialog.setLastColor(currentColor);
         colorPickerDialog.setOnColorPickedListener((color, hexVal) -> currentColor = color);
 
-        ImageButton brushButton = (ImageButton) view.findViewById(R.id.default_brush);
+        brushButton = (ImageButton) view.findViewById(R.id.default_brush);
         brushButton.setOnClickListener(v -> DefaultBrushClick());
 
-        ImageButton blurButton = (ImageButton) view.findViewById(R.id.blur);
+        blurButton = (ImageButton) view.findViewById(R.id.blur);
         blurButton.setOnClickListener(v -> BlurClick());
 
-        ImageButton bucketButton = (ImageButton) view.findViewById(R.id.bucket);
+        bucketButton = (ImageButton) view.findViewById(R.id.bucket);
         bucketButton.setOnClickListener(v -> BucketClick());
+
+        circleButton = (ImageButton) view.findViewById(R.id.circle);
+        circleButton.setOnClickListener(v -> CircleClick());
+
+        rectangleButton = (ImageButton) view.findViewById(R.id.rectangle);
+        rectangleButton.setOnClickListener(v -> RectangleClick());
+
+        eraseButton = (ImageButton) view.findViewById(R.id.erase);
+        eraseButton.setOnClickListener(v -> EraseClick());
 
         ImageButton deleteButton = (ImageButton) view.findViewById(R.id.delete_drawing);
         deleteButton.setOnClickListener(v -> DeleteClick());
@@ -82,6 +99,10 @@ public class MainActivityFragment extends Fragment {
 
         ImageButton colorButton = (ImageButton) view.findViewById(R.id.color);
         colorButton.setOnClickListener(v -> ColorClick());
+
+        currentbtn = brushButton;
+        ChangeFocus(brushButton);
+
         return view;
     }
 
@@ -240,21 +261,6 @@ public class MainActivityFragment extends Fragment {
         return doodleView;
     }
 
-    public void DefaultBrushClick()
-    {
-        doodleView.setDefaultBrush();
-    }
-
-    public void BlurClick()
-    {
-        doodleView.setBlurBrush();
-    }
-
-    public void BucketClick()
-    {
-        doodleView.setPaintBucket();
-    }
-
     public void DeleteClick() {
         confirmErase(); // confirm before erasing image
     }
@@ -273,5 +279,45 @@ public class MainActivityFragment extends Fragment {
             }
         });
         colorPickerDialog.show();
+    }
+
+    public void DefaultBrushClick()
+    {
+        ChangeFocus(brushButton);
+        doodleView.setDefaultBrush();
+    }
+
+    public void BlurClick()
+    {
+        ChangeFocus(blurButton);
+        doodleView.setBlurBrush();
+    }
+
+    public void BucketClick()
+    {
+        ChangeFocus(bucketButton);
+        doodleView.setPaintBucket();
+    }
+
+    public void EraseClick() {
+        ChangeFocus(eraseButton);
+
+    }
+
+    public void CircleClick() {
+        ChangeFocus(circleButton);
+    }
+
+    public void RectangleClick() {
+        ChangeFocus(rectangleButton);
+    }
+
+    public void ChangeFocus(ImageButton btn)
+    {
+        currentbtn.setColorFilter(0xFFFFFFFF, PorterDuff.Mode.MULTIPLY);
+
+        int focusColor = R.color.white;
+        btn.setColorFilter(focusColor);
+        currentbtn = btn;
     }
 }

@@ -4,14 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
+
     <com.example.doodlzapp.DoodleView
         android:id="@+id/doodleView"
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         tools:context=".MainActivityFragment"
-        tools:showIn="@layout/activity_main">
-    </com.example.doodlzapp.DoodleView>
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="-54dp"
+        tools:showIn="@layout/activity_main"></com.example.doodlzapp.DoodleView>
 
     <HorizontalScrollView
         android:layout_width="match_parent"
@@ -93,7 +95,19 @@
                 android:foreground="?selectableItemBackground"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:src="@drawable/ic_color_fill_svgrepo_com"
+                android:src="@drawable/ic_paint_bucket_svgrepo_com"
+                android:tint="@color/white" />
+
+            <ImageButton
+                android:id="@+id/rectangle"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:background="#353639"
+                android:contentDescription="@string/menuitem_Rectangle"
+                android:foreground="?selectableItemBackground"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_rectangle_frame_svgrepo_com"
                 android:tint="@color/white" />
 
             <ImageButton

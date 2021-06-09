@@ -28,7 +28,7 @@
     <string name="menuitem_undo">Undo</string>
     <string name="menuitem_redo">Redo</string>
     <string name="menuitem_fill">Fill</string>
-    <string name="menuitem_square">Square</string>
+    <string name="menuitem_Rectangle">Rectangle</string>
     <string name="menuitem_circle">Circle</string>
     <string name="menuitem_default_brush">Default brush</string>
     <string name="menuitem_blur">Blur brush</string>
