@@ -223,11 +223,8 @@ public class DoodleView extends View
                 }
                 break;
             case CIRCLE:
-                this.addPath(true);
-                break;
             case RECTANGLE:
                 this.addPath(true);
-                drawPath.addRect(mX, mY, x, y, Path.Direction.CW);
                 break;
             default:
                 this.addPath(true);
@@ -274,7 +271,7 @@ public class DoodleView extends View
         {
             case PAINT_BUCKET:
                 Point _point = new  Point((int)mX, (int)mY);
-                FloodFill(canvasBitmap, _point, 0, paintColor);
+                FloodFill(canvasBitmap, _point, canvasBitmap.getPixel((int)mX, (int)mY), paintColor);
                 break;
             case CIRCLE:
             case RECTANGLE:
@@ -283,9 +280,6 @@ public class DoodleView extends View
             default:
                 drawPath.lineTo(mX, mY);
                 this.addPath(true);
-                drawPath.reset();
-                undonePaths.clear();
-                undonePaints.clear();
                 break;
         }
     }
