@@ -236,11 +236,11 @@ public class DoodleView extends View
                 }
                 break;
             case CIRCLE:
-                double distanceX = Math.abs((double)(this.mX - x));
-                double distanceY = Math.abs((double)(this.mY - y));
-                double radius    = Math.sqrt(Math.pow(distanceX, 2.0) + Math.pow(distanceY, 2.0));
+                double distanceX = (double)(this.mX - x);
+                double distanceY = (double)(this.mY - y);
+                double radius    = Math.sqrt(Math.pow(Math.abs(distanceX/2), 2.0) + Math.pow(Math.abs(distanceY/2), 2.0));
                 drawPath.reset();
-                drawPath.addCircle(this.mX, this.mY, (float)radius, Path.Direction.CCW);
+                drawPath.addCircle((float)(this.mX - distanceX/2), (float)(this.mY - distanceY/2), (float)radius, Path.Direction.CCW);
                 break;
             case RECTANGLE:
                 drawPath.reset();
