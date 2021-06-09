@@ -170,10 +170,6 @@ public class MainActivityFragment extends Fragment {
                         // calculate the change in acceleration
                         acceleration = currentAcceleration *
                                 (currentAcceleration - lastAcceleration);
-
-                        // if the acceleration is above a certain threshold
-                        if (acceleration > ACCELERATION_THRESHOLD)
-                            confirmErase();
                     }
                 }
 
