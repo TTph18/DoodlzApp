@@ -295,12 +295,15 @@ public class DoodleView extends View
         switch (this.tool)
         {
             case PAINT_BUCKET:
+                Point _point = new  Point((int)x, (int)y);
+                FloodFill(canvasBitmap, _point, 0, paintColor);
                 break;
             case CIRCLE:
                 this.addPath(true);
                 drawPath.addCircle(x, y, 50, Path.Direction.CW);
                 break;
             case RECTANGLE:
+                drawPath.addRect(mX, mY, x, y, Path.Direction.CW);
                 break;
             default:
                 this.addPath(true);
@@ -335,7 +338,7 @@ public class DoodleView extends View
                 }
                 break;
         }
-        drawCanvas.drawPath(drawPath, drawPaint);
+
     }
 
     private void touch_up() {
@@ -344,17 +347,14 @@ public class DoodleView extends View
             case PAINT_BUCKET:
                 break;
             case CIRCLE:
-                drawPath.addCircle(mX, mY, 50, Path.Direction.CW);
-                this.addPath(true);
-                break;
             case RECTANGLE:
+                drawCanvas.drawPath(drawPath, drawPaint);
                 break;
             default:
                 drawPath.lineTo(mX, mY);
                 this.addPath(true);
                 break;
         }
-        drawCanvas.drawPath(drawPath, drawPaint);
     }
 
     @Override
