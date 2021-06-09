@@ -295,6 +295,9 @@ public class DoodleView extends View
         switch (this.tool)
         {
             case PAINT_BUCKET:
+                for (int i = 0; i < mPaths.size(); ++i) {
+                    drawCanvas.drawPath(mPaths.get(i), mPaints.get(i));
+                }
                 Point _point = new  Point((int)x, (int)y);
                 FloodFill(canvasBitmap, _point, 0, paintColor);
                 break;
@@ -318,6 +321,9 @@ public class DoodleView extends View
         switch (this.tool)
         {
             case PAINT_BUCKET:
+                for (int i = 0; i < mPaths.size(); ++i) {
+                    drawCanvas.drawPath(mPaths.get(i), mPaints.get(i));
+                }
                 Point _point = new  Point((int)x, (int)y);
                 FloodFill(canvasBitmap, _point, 0, paintColor);
                 break;
@@ -352,7 +358,7 @@ public class DoodleView extends View
                 break;
             case CIRCLE:
             case RECTANGLE:
-                drawCanvas.drawPath(drawPath, drawPaint);
+                this.addPath(true);
                 break;
             default:
                 drawPath.lineTo(mX, mY);
