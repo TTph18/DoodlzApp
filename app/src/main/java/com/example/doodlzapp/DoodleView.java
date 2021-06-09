@@ -173,92 +173,7 @@ public class DoodleView extends View
         invalidate();
     }
 
-    private Paint createPaint() {
-        Paint paint = new Paint();
-
-        paint.setAntiAlias(true);
-        paint.setStrokeWidth(currentBrushSize);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeJoin(Paint.Join.ROUND);
-        paint.setStrokeCap(Paint.Cap.ROUND);
-        switch (this.tool)
-        {
-            case ERASER:
-                paint.setColor(baseColor);
-                break;
-            case BLUR_BRUSH:
-                paint.setMaskFilter(mBlur);
-                break;
-            case DEFAULT_BRUSH:
-                paint.setMaskFilter(mDefault);
-                break;
-            default:
-                break;
-        }
-        return paint;
-    }
-
-    private Path createPath(MotionEvent event) {
-        Path path = new Path();
-
-        // Save for ACTION_MOVE
-        this.mX = event.getX();
-        this.mY = event.getY();
-
-        path.moveTo(this.mX, this.mY);
-
-        return path;
-    }
-
-    private void updateHistory(Path path) {
-        if (this.historyPointer == this.mPaths.size()) {
-            this.addPath(true);
-            this.historyPointer++;
-        } else {
-            // On the way of Undo or Redo
-            this.mPaths.set(this.historyPointer, path);
-            this.mPaints.set(this.historyPointer, this.createPaint());
-            this.historyPointer++;
-
-            for (int i = this.historyPointer, size = this.mPaints.size(); i < size; i++) {
-                this.mPaths.remove(this.historyPointer);
-                this.mPaints.remove(this.historyPointer);
-            }
-        }
-    }
-
-    private Path getCurrentPath() {
-        return this.mPaths.get(this.historyPointer - 1);
-    }
-
-    public boolean undo() {
-        if (this.historyPointer > 1) {
-            this.historyPointer--;
-            this.invalidate();
-
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean redo() {
-        if (this.historyPointer < this.mPaths.size()) {
-            this.historyPointer++;
-            this.invalidate();
-
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public void onClickUndo() {
-        if (mPaths.size() > 0) {
-            undonePaths.add(mPaths.remove(mPaths.size() - 1));
-            undonePaints.add(mPaints.remove(mPaints.size() - 1));
-            invalidate();
-        }
         if (mPaths.size() > 0) {
             undonePaths.add(mPaths.remove(mPaths.size() - 1));
             undonePaints.add(mPaints.remove(mPaints.size() - 1));
@@ -344,7 +259,6 @@ public class DoodleView extends View
                 }
                 break;
         }
-
     }
 
     private void touch_up() {
