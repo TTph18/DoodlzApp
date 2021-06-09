@@ -300,9 +300,9 @@ public class DoodleView extends View
                 break;
             case CIRCLE:
                 this.addPath(true);
-                drawPath.addCircle(x, y, 50, Path.Direction.CW);
                 break;
             case RECTANGLE:
+                this.addPath(true);
                 drawPath.addRect(mX, mY, x, y, Path.Direction.CW);
                 break;
             default:
@@ -322,7 +322,11 @@ public class DoodleView extends View
                 FloodFill(canvasBitmap, _point, 0, paintColor);
                 break;
             case CIRCLE:
-                drawPath.addCircle(x, y, 50, Path.Direction.CW);
+                double distanceX = Math.abs((double)(this.mX - x));
+                double distanceY = Math.abs((double)(this.mY - y));
+                double radius    = Math.sqrt(Math.pow(distanceX, 2.0) + Math.pow(distanceY, 2.0));
+                drawPath.reset();
+                drawPath.addCircle(this.mX, this.mY, (float)radius, Path.Direction.CCW);
                 break;
             case RECTANGLE:
                 drawPath.reset();
