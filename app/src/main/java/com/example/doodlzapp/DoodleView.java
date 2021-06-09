@@ -118,6 +118,10 @@ public class DoodleView extends View
     // clear the painting
     public void eraseAll() {
         mPaths.clear(); // remove all paths
+        mPaints.clear();
+        drawPath.reset();
+        undonePaths.clear();
+        undonePaints.clear();
         canvasBitmap.eraseColor(drawingBackgroundColor); // clear the bitmap
         invalidate(); // refresh the screen
     }
@@ -202,9 +206,7 @@ public class DoodleView extends View
     private static final float TOUCH_TOLERANCE = 4;
 
     private void touch_start(float x, float y) {
-        drawPath.reset();
-        undonePaths.clear();
-        undonePaints.clear();
+
         switch (this.tool)
         {
             case PAINT_BUCKET:
@@ -273,6 +275,9 @@ public class DoodleView extends View
             default:
                 drawPath.lineTo(mX, mY);
                 this.addPath(true);
+                drawPath.reset();
+                undonePaths.clear();
+                undonePaints.clear();
                 break;
         }
     }
