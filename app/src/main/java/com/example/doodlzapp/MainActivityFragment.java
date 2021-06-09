@@ -284,19 +284,19 @@ public class MainActivityFragment extends Fragment {
     public void DefaultBrushClick()
     {
         ChangeFocus(brushButton);
-        doodleView.setDefaultBrush();
+        doodleView.setTool(DoodleView.Tool.DEFAULT_BRUSH);
     }
 
     public void BlurClick()
     {
         ChangeFocus(blurButton);
-        doodleView.setBlurBrush();
+        doodleView.setTool(DoodleView.Tool.BLUR_BRUSH);
     }
 
     public void BucketClick()
     {
         ChangeFocus(bucketButton);
-        doodleView.setPaintBucket();
+        doodleView.setTool(DoodleView.Tool.PAINT_BUCKET);
     }
 
     public void EraseClick() {
@@ -306,10 +306,12 @@ public class MainActivityFragment extends Fragment {
 
     public void CircleClick() {
         ChangeFocus(circleButton);
+        doodleView.setTool(DoodleView.Tool.CIRCLE);
     }
 
     public void RectangleClick() {
         ChangeFocus(rectangleButton);
+        doodleView.setTool(DoodleView.Tool.RECTANGLE);
     }
 
     public void ChangeFocus(ImageButton btn)

@@ -7,6 +7,7 @@ import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.CornerPathEffect;
+import android.graphics.MaskFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -27,9 +28,18 @@ import java.util.Queue;
 
 public class DoodleView extends View
 {
+    public enum Tool {
+        DEFAULT_BRUSH,
+        BLUR_BRUSH,
+        RECTANGLE,
+        CIRCLE,
+        PAINT_BUCKET,
+        ERASER;
+    }
     //public vars
     public Bitmap canvasBitmap;
 
+    private Tool tool = Tool.DEFAULT_BRUSH;
     //private vars
     private Path drawPath;
     private Paint drawPaint, canvasPaint;
@@ -39,12 +49,17 @@ public class DoodleView extends View
     private int drawingBackgroundColor;
 
     private Integer currentBrushSize = 15;
-    private ArrayList<Path> mPaths;
+    private ArrayList<Path> mPaths = new ArrayList<Path>();;
     private ArrayList<Path> undonePaths = new ArrayList<>();
     private ArrayList<Paint> undonePaints = new ArrayList<>();
-    private ArrayList<Paint> mPaints;
+    private ArrayList<Paint> mPaints = new ArrayList<Paint>();;
 
-    public boolean flagline = false;
+    // for Eraser
+    private int baseColor = Color.WHITE;
+
+    // for Undo, Redo
+    private int historyPointer = 0;
+
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
 
     private static float MIN_ZOOM = 1f;
@@ -53,10 +68,8 @@ public class DoodleView extends View
     private float scaleFactor = 1.f;
     private ScaleGestureDetector detector;
 
-    private boolean isBlurBrush;
-    private boolean isPaintBucket;
-    private boolean isDefaultBrush;
-    private boolean isShapeCircle;
+    private MaskFilter mBlur;
+    private MaskFilter mDefault;
 
     public DoodleView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -86,9 +99,6 @@ public class DoodleView extends View
 
     private void setupDraw()
     {
-        this.mPaths = new ArrayList<Path>();
-        this.mPaints = new ArrayList<Paint>();
-
         this.addPath(false);
 
         drawPaint = new Paint();
@@ -103,12 +113,10 @@ public class DoodleView extends View
         canvasPaint = new Paint(Paint.DITHER_FLAG);
         drawingBackgroundColor = 0;
 
-        isBlurBrush = false;
-        isPaintBucket = false;
-        isDefaultBrush = true;
-        isShapeCircle = false;
-    }
+        mBlur = new BlurMaskFilter(30, BlurMaskFilter.Blur.NORMAL);
+        mDefault = new BlurMaskFilter(1, BlurMaskFilter.Blur.SOLID);
 
+    }
 
     // clear the painting
     public void eraseAll() {
@@ -148,18 +156,114 @@ public class DoodleView extends View
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
 
-        if (isDefaultBrush) drawPaint.setMaskFilter(new BlurMaskFilter(1, BlurMaskFilter.Blur.SOLID));
-        if (isBlurBrush) drawPaint.setMaskFilter(new BlurMaskFilter(20, BlurMaskFilter.Blur.NORMAL));
+        switch (this.tool)
+        {
+            case ERASER:
+                drawPaint.setColor(baseColor);
+                break;
+            case BLUR_BRUSH:
+                drawPaint.setMaskFilter(mBlur);
+                break;
+            case DEFAULT_BRUSH:
+                drawPaint.setMaskFilter(mDefault);
+                break;
+            default:
+                break;
+        }
         invalidate();
     }
 
+    private Paint createPaint() {
+        Paint paint = new Paint();
+
+        paint.setAntiAlias(true);
+        paint.setStrokeWidth(currentBrushSize);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        switch (this.tool)
+        {
+            case ERASER:
+                paint.setColor(baseColor);
+                break;
+            case BLUR_BRUSH:
+                paint.setMaskFilter(mBlur);
+                break;
+            case DEFAULT_BRUSH:
+                paint.setMaskFilter(mDefault);
+                break;
+            default:
+                break;
+        }
+        return paint;
+    }
+
+    private Path createPath(MotionEvent event) {
+        Path path = new Path();
+
+        // Save for ACTION_MOVE
+        this.mX = event.getX();
+        this.mY = event.getY();
+
+        path.moveTo(this.mX, this.mY);
+
+        return path;
+    }
+
+    private void updateHistory(Path path) {
+        if (this.historyPointer == this.mPaths.size()) {
+            this.addPath(true);
+            this.historyPointer++;
+        } else {
+            // On the way of Undo or Redo
+            this.mPaths.set(this.historyPointer, path);
+            this.mPaints.set(this.historyPointer, this.createPaint());
+            this.historyPointer++;
+
+            for (int i = this.historyPointer, size = this.mPaints.size(); i < size; i++) {
+                this.mPaths.remove(this.historyPointer);
+                this.mPaints.remove(this.historyPointer);
+            }
+        }
+    }
+
+    private Path getCurrentPath() {
+        return this.mPaths.get(this.historyPointer - 1);
+    }
+
+    public boolean undo() {
+        if (this.historyPointer > 1) {
+            this.historyPointer--;
+            this.invalidate();
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean redo() {
+        if (this.historyPointer < this.mPaths.size()) {
+            this.historyPointer++;
+            this.invalidate();
+
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public void onClickUndo() {
         if (mPaths.size() > 0) {
             undonePaths.add(mPaths.remove(mPaths.size() - 1));
             undonePaints.add(mPaints.remove(mPaints.size() - 1));
             invalidate();
-        } else {}
+        }
+        if (mPaths.size() > 0) {
+            undonePaths.add(mPaths.remove(mPaths.size() - 1));
+            undonePaints.add(mPaints.remove(mPaints.size() - 1));
+            invalidate();
+        }
         if (mPaths.size() > 0) {
             undonePaths.add(mPaths.remove(mPaths.size() - 1));
             undonePaints.add(mPaints.remove(mPaints.size() - 1));
@@ -173,22 +277,88 @@ public class DoodleView extends View
             mPaints.add(undonePaints.remove(undonePaints.size() - 1));
             invalidate();
         }
-        else{}
         if (undonePaths.size() > 0) {
             mPaths.add(undonePaths.remove(undonePaths.size() - 1));
             mPaints.add(undonePaints.remove(undonePaints.size() - 1));
             invalidate();
         }
-        else{}
     }
 
-    public void drawLine(boolean flag) {
-        flagline = flag;
+    //Touch event
+    private float mX, mY;
+    private static final float TOUCH_TOLERANCE = 4;
+
+    private void touch_start(float x, float y) {
+        drawPath.reset();
+        undonePaths.clear();
+        undonePaints.clear();
+        switch (this.tool)
+        {
+            case PAINT_BUCKET:
+                break;
+            case CIRCLE:
+                this.addPath(true);
+                drawPath.addCircle(x, y, 50, Path.Direction.CW);
+                break;
+            case RECTANGLE:
+                break;
+            default:
+                this.addPath(true);
+                drawPath.moveTo(x, y);
+                break;
+        }
+        mX = x;
+        mY = y;
+    }
+
+    private void touch_move(float x, float y) {
+        switch (this.tool)
+        {
+            case PAINT_BUCKET:
+                Point _point = new  Point((int)x, (int)y);
+                FloodFill(canvasBitmap, _point, 0, paintColor);
+                break;
+            case CIRCLE:
+                drawPath.addCircle(x, y, 50, Path.Direction.CW);
+                break;
+            case RECTANGLE:
+                drawPath.reset();
+                drawPath.addRect(mX, mY, x, y, Path.Direction.CW);
+                break;
+            default:
+                float dx = Math.abs(x - mX);
+                float dy = Math.abs(y - mY);
+                if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
+                    drawPath.quadTo(mX, mY, (x + mX)/2, (y + mY)/2);
+                    mX = x;
+                    mY = y;
+                }
+                break;
+        }
+        drawCanvas.drawPath(drawPath, drawPaint);
+    }
+
+    private void touch_up() {
+        switch (this.tool)
+        {
+            case PAINT_BUCKET:
+                break;
+            case CIRCLE:
+                drawPath.addCircle(mX, mY, 50, Path.Direction.CW);
+                this.addPath(true);
+                break;
+            case RECTANGLE:
+                break;
+            default:
+                drawPath.lineTo(mX, mY);
+                this.addPath(true);
+                break;
+        }
+        drawCanvas.drawPath(drawPath, drawPaint);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         detector.onTouchEvent(event);
 
         float touchX = event.getX();
@@ -196,62 +366,18 @@ public class DoodleView extends View
 
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                if (isPaintBucket)
-                {
-                    Point _point = new  Point((int)touchX, (int)touchY);
-                    FloodFill(canvasBitmap, _point, 0, paintColor);
-                }
-                else if (isShapeCircle)
-                {
-                    this.addPath(true);
-                    drawPath.addCircle(touchX, touchY, 50, Path.Direction.CW);
-                    drawCanvas.drawPath(drawPath, drawPaint);
-                }
-                else{
-                    this.addPath(true);
-                    drawPath.moveTo(touchX, touchY);
-                    drawCanvas.drawPath(drawPath, drawPaint);
-                }
+                touch_start(touchX, touchY);
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (isPaintBucket)
-                {
-                    Point _point = new  Point((int)touchX, (int)touchY);
-                    FloodFill(canvasBitmap, _point, 0, Color.RED);
-                }
-                else if (isShapeCircle)
-                {
-                    this.addPath(true);
-                    drawPath.addCircle(touchX, touchY, 50, Path.Direction.CW);
-                    drawCanvas.drawPath(drawPath, drawPaint);
-                }
-                else {
-                    drawPath.lineTo(touchX, touchY);
-                    drawCanvas.drawPath(drawPath, drawPaint);
-                }
-
+                touch_move(touchX, touchY);
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                if (isDefaultBrush)
-                {
-                    drawPath.lineTo(touchX, touchY);
-                    this.addPath(true);
-                    drawCanvas.drawPath(drawPath, drawPaint);
-                    drawPath.reset();
-                    undonePaths.clear();
-                    undonePaints.clear();
-                }
-                else if(isShapeCircle)
-                {
-                    drawPath.addCircle(touchX, touchY, 50, Path.Direction.CW);
-                    this.addPath(true);
-                    drawCanvas.drawPath(drawPath, drawPaint);
-                    drawPath.reset();
-                    undonePaths.clear();
-                    undonePaints.clear();
-                }
+                touch_up();
+                drawPath.reset();
+                undonePaths.clear();
+                undonePaints.clear();
                 invalidate();
                 break;
             default:
@@ -260,7 +386,6 @@ public class DoodleView extends View
         invalidate();
         return true;
     }
-
 
     private void FloodFill(Bitmap bmp, Point pt, int targetColor, int replacementColor){
         Queue<Point> q = new LinkedList<Point>();
@@ -336,12 +461,6 @@ public class DoodleView extends View
         invalidate();
     }
 
-    public void setPaintBucket() {
-        isBlurBrush = false;
-        isPaintBucket = true;
-        isDefaultBrush = false;
-    }
-
     // return the painted line's width
     public int getBrushWidth() {
         return (int)drawPaint.getStrokeWidth();
@@ -353,22 +472,11 @@ public class DoodleView extends View
         invalidate();
     }
 
-    public void setDefaultBrush() {
-        isBlurBrush = false;
-        isPaintBucket = false;
-        isDefaultBrush = true;
+    public Tool getTool() {
+        return this.tool;
     }
 
-    public void setBlurBrush(){
-        isBlurBrush = true;
-        isPaintBucket = false;
-        isDefaultBrush = false;
-    }
-
-    public void setShapeCircle() {
-        isBlurBrush = false;
-        isPaintBucket = false;
-        isDefaultBrush = false;
-        isShapeCircle = true;
+    public void setTool(Tool _tool) {
+        this.tool = _tool;
     }
 }
