@@ -57,9 +57,6 @@ public class DoodleView extends View
     // for Eraser
     private int baseColor = Color.WHITE;
 
-    // for Undo, Redo
-    private int historyPointer = 0;
-
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
 
     private static float MIN_ZOOM = 1f;

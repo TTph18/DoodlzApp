@@ -301,7 +301,7 @@ public class MainActivityFragment extends Fragment {
 
     public void EraseClick() {
         ChangeFocus(eraseButton);
-
+        doodleView.setTool(DoodleView.Tool.ERASER);
     }
 
     public void CircleClick() {
